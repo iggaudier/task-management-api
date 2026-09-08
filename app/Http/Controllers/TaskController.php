@@ -18,10 +18,12 @@ class TaskController extends Controller
         $query = $user->isAdmin()
             ? Task::query()
             : Task::where('user_id', $user->id);
-        
+
         if ($search = $request->query('search')) {
-            $query->where('title', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                ->orWhere('description', 'like', "%{$search}%");
+            });
         }
 
         return $query->latest()->paginate(10);

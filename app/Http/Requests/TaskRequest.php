@@ -22,10 +22,14 @@ class TaskRequest extends FormRequest
      */
     public function rules(): array
     {
+        $isUpdate = $this->isMethod('PUT') || $this->isMethod('PATCH');
+
         return [
-            'title' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
-            'completed' => ['sometimes', 'boolean']
+            'title' => $isUpdate
+                ? 'sometimes|required|string|max:255'
+                : 'required|string|max:255',
+            'description' => 'nullable|string',
+            'completed' => 'sometimes|boolean',
         ];
     }
 }
